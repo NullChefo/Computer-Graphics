@@ -17,11 +17,10 @@ import javax.swing.JToggleButton;
 
 
 public class LaysHistView extends javax.swing.JDialog {
-    private DefaultListModel mlayers;
-    private DefaultListModel mhistory;
+    private DefaultListModel mLayers;
+    private DefaultListModel mHistory;
     private MainView mainview;
     private Controller control;
-
     private javax.swing.JButton buttonLaysDown;
     private javax.swing.JButton buttonLaysMergeDown;
     private javax.swing.JButton buttonLaysMergeUp;
@@ -41,10 +40,6 @@ public class LaysHistView extends javax.swing.JDialog {
     private javax.swing.JTabbedPane tabbedPaneLaysHist;
 
 
-
-    /**
-     * Creates new form LaysHistView
-     */
     public LaysHistView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -58,12 +53,12 @@ public class LaysHistView extends javax.swing.JDialog {
         buttonLaysRemove.addActionListener(control);
         buttonLaysUp.addActionListener(control);
         buttonLaysDown.addActionListener(control);
-        mlayers = new DefaultListModel();
+        mLayers = new DefaultListModel();
         listLayers.setCellRenderer(new CellRender());
-        listLayers.setModel(mlayers);
-        mhistory = new DefaultListModel();
+        listLayers.setModel(mLayers);
+        mHistory = new DefaultListModel();
         listHistory.setCellRenderer(new CellRender());
-        listHistory.setModel(mhistory);
+        listHistory.setModel(mHistory);
         buttonLaysUp.setIcon(new ImageIcon("src/images/up.png"));
         buttonLaysDown.setIcon(new ImageIcon("src/images/down.png"));
         buttonLaysRemove.setIcon(new ImageIcon("src/images/remove.png"));
@@ -91,11 +86,11 @@ public class LaysHistView extends javax.swing.JDialog {
     }
 
     public DefaultListModel getModelLayers() {
-        return mlayers;
+        return mLayers;
     }
 
     public DefaultListModel getModelHistory() {
-        return mhistory;
+        return mHistory;
     }
 
     public JList getListLayers() {
@@ -262,14 +257,14 @@ public class LaysHistView extends javax.swing.JDialog {
         listHistory.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         scrollPaneHistory.setViewportView(listHistory);
 
-        javax.swing.GroupLayout PhistoryLayout = new javax.swing.GroupLayout(panelHistory);
-        panelHistory.setLayout(PhistoryLayout);
-        PhistoryLayout.setHorizontalGroup(
-                PhistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout pHistoryLayout = new javax.swing.GroupLayout(panelHistory);
+        panelHistory.setLayout(pHistoryLayout);
+        pHistoryLayout.setHorizontalGroup(
+                pHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(scrollPaneHistory, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
         );
-        PhistoryLayout.setVerticalGroup(
-                PhistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        pHistoryLayout.setVerticalGroup(
+                pHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(scrollPaneHistory, javax.swing.GroupLayout.DEFAULT_SIZE, 622, Short.MAX_VALUE)
         );
 
@@ -298,17 +293,10 @@ public class LaysHistView extends javax.swing.JDialog {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
+
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -325,9 +313,7 @@ public class LaysHistView extends javax.swing.JDialog {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(LaysHistView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
-        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

@@ -45,6 +45,7 @@ public class ImagePanel extends JPanel implements Serializable
     private transient boolean hasRectangle = false;
     //#TODO 2 add here hasShape
     private transient boolean hasOval = false;
+    private transient boolean hasCircle3 = false;
 
 
     private transient boolean hasStar = false;
@@ -92,8 +93,8 @@ public class ImagePanel extends JPanel implements Serializable
         return imageCol;
     }
 
-    public void setImgCol(BufferedImage nimg) {
-        imageCol = nimg;
+    public void setImgCol(BufferedImage img) {
+        imageCol = img;
     }
 
     public ImagePanel(Controller ctr, CareTaker ct) {
@@ -148,6 +149,8 @@ public class ImagePanel extends JPanel implements Serializable
         hasOval = b;
     }
 
+
+
     //#TODO 3 --> From controller setHasShape
 
     public void setHasStar(boolean b) {
@@ -172,6 +175,9 @@ public class ImagePanel extends JPanel implements Serializable
         hasHearth = b;
     }
 
+    public void setHasCircle3(boolean b) {
+        hasCircle3 = b;
+    }
 
 
     public boolean getHasLine() {
@@ -238,10 +244,10 @@ public class ImagePanel extends JPanel implements Serializable
     {
         control = ctr;
         caretaker = new CareTaker();
-        BufferedImage img = null;
+        BufferedImage bufferedImage = null;
         try
         {
-            img = ImageIO.read(file);
+            bufferedImage = ImageIO.read(file);
             fileName = file.getName();
             filePath = file.getPath();
         } catch (IOException e)
@@ -249,10 +255,10 @@ public class ImagePanel extends JPanel implements Serializable
             e.printStackTrace();
         }
         layers = new ArrayList();
-        imageW = img.getWidth();
-        imageH = img.getHeight();
+        imageW = bufferedImage.getWidth();
+        imageH = bufferedImage.getHeight();
         BufferedImage image = new BufferedImage(imageW, imageH, BufferedImage.TYPE_4BYTE_ABGR);
-        image.getGraphics().drawImage(img, 0, 0, null);
+        image.getGraphics().drawImage(bufferedImage, 0, 0, null);
         LayerPanel lay = new LayerPanel(image, file.getName(), 0, 0);
         layers.add(lay);
         zoom = 100;
@@ -363,20 +369,20 @@ public class ImagePanel extends JPanel implements Serializable
 
     public void newLayer(BufferedImage img) {
         nbLayers++;
-        LayerPanel layer = new LayerPanel(img, "newlayer"+ nbLayers, imageW /2-img.getWidth()/2, imageH /2-img.getHeight()/2);
+        LayerPanel layer = new LayerPanel(img, "newLayer"+ nbLayers, imageW /2-img.getWidth()/2, imageH /2-img.getHeight()/2);
         indexSelect = layers.size();
         layers.add(layer);
     }
 
-    public void newLayer(BufferedImage img, String layname) {
-        LayerPanel lay = new LayerPanel(img, layname, imageW /2-img.getWidth()/2, imageH /2-img.getHeight()/2);
+    public void newLayer(BufferedImage img, String layerName) {
+        LayerPanel lay = new LayerPanel(img, layerName, imageW /2-img.getWidth()/2, imageH /2-img.getHeight()/2);
         indexSelect = layers.size();
         layers.add(lay);
     }
 
     public void newLayer(BufferedImage img, int locX, int locY) {
         nbLayers++;
-        LayerPanel layer = new LayerPanel(img, "newlayer"+ nbLayers, locX, locY);
+        LayerPanel layer = new LayerPanel(img, "newLayer"+ nbLayers, locX, locY);
         indexSelect = layers.size();
         layers.add(layer);
     }
@@ -423,7 +429,7 @@ public class ImagePanel extends JPanel implements Serializable
             double s = Math.abs(Math.sin(rot));
             double c = Math.abs(Math.cos(rot));
             int w, h, nw, nh, argb;
-            BufferedImage laybuf;
+            BufferedImage layerBuffer;
             Graphics2D graphics2D;
             argb = new Color(255,255,255,0).getRGB();
             nw = (int)Math.floor(imageW *c+ imageH *s);
@@ -432,9 +438,9 @@ public class ImagePanel extends JPanel implements Serializable
             imageH = nh;
 
             for (LayerPanel layerPanel : layers) {
-                laybuf = layerPanel.getImage();
-                w = laybuf.getWidth();
-                h = laybuf.getHeight();
+                layerBuffer = layerPanel.getImage();
+                w = layerBuffer.getWidth();
+                h = layerBuffer.getHeight();
                 nw = (int)Math.floor(w*c+h*s);
                 nh = (int)Math.floor(h*c+w*s);
                 imageRot = new BufferedImage(nw, nh, BufferedImage.TYPE_4BYTE_ABGR);
@@ -447,7 +453,7 @@ public class ImagePanel extends JPanel implements Serializable
                 graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                 graphics2D.translate((nw-w)/2, (nh-h)/2);
                 graphics2D.rotate(rot, w/2, h/2);
-                graphics2D.drawRenderedImage(laybuf, null);
+                graphics2D.drawRenderedImage(layerBuffer, null);
                 graphics2D.dispose();
                 layerPanel.setImage(imageRot);
             }
@@ -625,7 +631,7 @@ public class ImagePanel extends JPanel implements Serializable
                     g.setColor(control.getCol());
                     int ix = (initX >= cursorX) ? cursorX : initX;
                     int iy = (initY >= cursorY) ? cursorY : initY;
-                    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
+                //    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
                 }
 
 
@@ -634,26 +640,36 @@ public class ImagePanel extends JPanel implements Serializable
                     g.setColor(control.getCol());
                     int ix = (initX >= cursorX) ? cursorX : initX;
                     int iy = (initY >= cursorY) ? cursorY : initY;
-                    g.fillOval(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
+                 //   g.fillOval(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
                 }
 
                 // #TODO 4 --> after setHasShape  edit maybe  !!! FIX bellow
 
-                else if (hasStar) {
+              else if (hasStar) {
                     g.setColor(control.getCol());
                     int ix = (initX >= cursorX) ? cursorX : initX;
                     int iy = (initY >= cursorY) ? cursorY : initY;
-                    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
+                //    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
 
 
                 }
+                else if (hasCircle3) {
+                    g.setColor(control.getCol());
+                    int ix = (initX >= cursorX) ? cursorX : initX;
+                    int iy = (initY >= cursorY) ? cursorY : initY;
+                    //    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
+
+
+                }
+
+
 
 
                 else if (hasHexagon) {
                     g.setColor(control.getCol());
                     int ix = (initX >= cursorX) ? cursorX : initX;
                     int iy = (initY >= cursorY) ? cursorY : initY;
-                    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
+                //    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
 
                 }
 
@@ -662,33 +678,33 @@ public class ImagePanel extends JPanel implements Serializable
                     g.setColor(control.getCol());
                     int ix = (initX >= cursorX) ? cursorX : initX;
                     int iy = (initY >= cursorY) ? cursorY : initY;
-                    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
+                //    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
                 }
 
                 else if (hasPentagon) {
                     g.setColor(control.getCol());
                     int ix = (initX >= cursorX) ? cursorX : initX;
                     int iy = (initY >= cursorY) ? cursorY : initY;
-                    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
+              //      g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
                 }
                 else if (hasTrapezoid) {
                     g.setColor(control.getCol());
                     int ix = (initX >= cursorX) ? cursorX : initX;
                     int iy = (initY >= cursorY) ? cursorY : initY;
-                    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
+               //     g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
                 }
                 else if (hasTriangle) {
                     g.setColor(control.getCol());
                     int ix = (initX >= cursorX) ? cursorX : initX;
                     int iy = (initY >= cursorY) ? cursorY : initY;
-                    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
+               //     g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
                 }
 
                 else if (hasHearth) {
                     g.setColor(control.getCol());
                     int ix = (initX >= cursorX) ? cursorX : initX;
                     int iy = (initY >= cursorY) ? cursorY : initY;
-                    g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
+               //     g.fillRect(ix, iy, Math.abs(initX - cursorX), Math.abs(initY - cursorY));
                 }
 
 

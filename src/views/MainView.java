@@ -28,9 +28,46 @@ public class MainView extends javax.swing.JFrame implements Observer {
     private BrightnessPanelView brightnessView = null;
     private int newProject = 0;
 
-    /**
-     * Creates new form MainView
-     */
+    // Variables declaration
+    private javax.swing.JLabel labelX;
+    private javax.swing.JLabel labelY;
+    private javax.swing.JLabel labelZoom;
+    private javax.swing.JLabel labelZoom2;
+    private javax.swing.JMenuItem menuItemBalance;
+    private javax.swing.JMenuItem menuItemBright;
+    private javax.swing.JMenuItem menuItemClose;
+    private javax.swing.JMenuItem menuItemCloseAll;
+    private javax.swing.JMenuItem menuItemCopy;
+    private javax.swing.JMenuItem menuItemCut;
+    private javax.swing.JMenuItem menuItemHistory;
+    private javax.swing.JMenuItem menuItemLayResize;
+    private javax.swing.JMenuItem menuItemLayRotate;
+    private javax.swing.JMenuItem menuItemLayers;
+    private javax.swing.JMenuItem menuItemNew;
+    private javax.swing.JMenuItem menuItemNewLayer;
+    private javax.swing.JMenuItem menuItemOpen;
+    private javax.swing.JMenuItem menuItemOpenLayer;
+    private javax.swing.JMenuItem menuItemPaste;
+    private javax.swing.JMenuItem menuItemQuit;
+    private javax.swing.JMenuItem menuItemRedo;
+    private javax.swing.JMenuItem menuItemResize;
+    private javax.swing.JMenuItem menuItemRotation;
+    private javax.swing.JMenuItem menuItemSave;
+    private javax.swing.JMenuItem menuItemSelectAll;
+    private javax.swing.JMenuItem menuItemTools;
+    private javax.swing.JMenuItem menuItemUndo;
+    private javax.swing.JMenu menuEdit;
+    private javax.swing.JMenuBar MenuBar;
+    private javax.swing.JMenu menuFile;
+
+    private javax.swing.JMenu menuImage;
+    private javax.swing.JMenu menuLayer;
+    private javax.swing.JMenu menuWindow;
+    private javax.swing.JSpinner spinnerZoom;
+    private TabbedPanes tabbedPane;
+    // End of variables declaration
+
+
     public MainView() {
         initComponents();
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -55,7 +92,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
         menuItemResize.addActionListener(controller);
         menuItemTools.addActionListener(controller);
         menuItemLayers.addActionListener(controller);
-        buttonStopFilter.addActionListener(controller);
         menuItemRotation.addActionListener(controller);
         menuItemLayRotate.addActionListener(controller);
         menuItemLayResize.addActionListener(controller);
@@ -76,7 +112,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
         labelZoom.setEnabled(false);
         spinnerZoom.setEnabled(false);
         labelZoom2.setEnabled(false);
-        buttonStopFilter.setEnabled(false);
         menuItemSave.setEnabled(false);
         menuItemClose.setEnabled(false);
         menuItemCloseAll.setEnabled(false);
@@ -90,7 +125,7 @@ public class MainView extends javax.swing.JFrame implements Observer {
         menuItemOpen.setIcon(new ImageIcon("src/images/open.png"));
         menuItemSave.setIcon(new ImageIcon("src/images/save.png"));
         menuItemClose.setIcon(new ImageIcon("src/images/close.png"));
-        menuItemCloseAll.setIcon(new ImageIcon("src/images/closeall.png"));
+        menuItemCloseAll.setIcon(new ImageIcon("src/images/closeAll.png"));
         menuItemQuit.setIcon(new ImageIcon("src/images/quit.png"));
         menuItemRotation.setIcon(new ImageIcon("src/images/rotate.png"));
         menuItemResize.setIcon(new ImageIcon("src/images/resize.png"));
@@ -105,10 +140,10 @@ public class MainView extends javax.swing.JFrame implements Observer {
         menuItemRedo.setIcon(new ImageIcon("src/images/redo.png"));
         menuItemCopy.setIcon(new ImageIcon("src/images/copy.png"));
         menuItemPaste.setIcon(new ImageIcon("src/images/paste.png"));
-        menuItemCut.setIcon(new ImageIcon("src/images/cutbis.png"));
+        menuItemCut.setIcon(new ImageIcon("src/images/cutIco.png"));
 
 
-        menuItemSelectAll.setIcon(new ImageIcon("src/images/selectall.png"));
+        menuItemSelectAll.setIcon(new ImageIcon("src/images/selectAll.png"));
 
         menuItemBalance.setIcon(new ImageIcon("src/images/color.png"));
         menuItemBalance.addActionListener(controller);
@@ -149,15 +184,11 @@ public class MainView extends javax.swing.JFrame implements Observer {
         this.setVisible(true);
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     */
     @SuppressWarnings("unchecked")
     private void initComponents() {
 
         labelZoom = new javax.swing.JLabel();
         labelZoom2 = new javax.swing.JLabel();
-        buttonStopFilter = new javax.swing.JButton();
         tabbedPane = new TabbedPanes();
         spinnerZoom = new javax.swing.JSpinner();
         labelX = new javax.swing.JLabel();
@@ -206,9 +237,7 @@ public class MainView extends javax.swing.JFrame implements Observer {
         labelZoom2.setFont(new java.awt.Font("Times New Roman", 0, 11));
         labelZoom2.setText("%");
 
-        buttonStopFilter.setFont(new java.awt.Font("Times New Roman", 0, 14));
-        buttonStopFilter.setText("stop filter");
-        buttonStopFilter.setToolTipText("stop filter execution");
+
 
         spinnerZoom.setFont(new java.awt.Font("Times New Roman", 0, 12));
         spinnerZoom.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(100.0f), Float.valueOf(10.0f), Float.valueOf(10000.0f), Float.valueOf(1.0f)));
@@ -372,8 +401,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(labelZoom2)
                                 .addGap(35, 35, 35)
-                                .addComponent(buttonStopFilter)
-                                .addGap(47, 47, 47)
                                 .addComponent(labelX, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(labelY, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -389,7 +416,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
                                         .addComponent(labelZoom)
                                         .addComponent(spinnerZoom)
                                         .addComponent(labelZoom2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(buttonStopFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(labelX, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
                                         .addComponent(labelY, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
@@ -601,10 +627,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
         return projects;
     }
 
-    public JButton getStopFilter() {
-        return buttonStopFilter;
-    }
-
     public Controller getController() {
         return controller;
     }
@@ -721,9 +743,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
         return textview;
     }
 
-    public JButton getButtonStopFilter() {
-        return buttonStopFilter;
-    }
 
     public void enableOnAdding() {
         labelZoom.setEnabled(true);
@@ -764,7 +783,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
         menuItemSave.setEnabled(false);
         menuItemClose.setEnabled(false);
         menuItemCloseAll.setEnabled(false);
-        buttonStopFilter.setEnabled(false);
         menuItemRotation.setEnabled(false);
         menuItemResize.setEnabled(false);
         menuItemOpenLayer.setEnabled(false);
@@ -784,48 +802,7 @@ public class MainView extends javax.swing.JFrame implements Observer {
         laysHistView.getSliderLaysAlpha().setValue(100);
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonStopFilter;
-    private javax.swing.JLabel labelX;
-    private javax.swing.JLabel labelY;
-    private javax.swing.JLabel labelZoom;
-    private javax.swing.JLabel labelZoom2;
-    private javax.swing.JMenuItem menuItemBalance;
-    private javax.swing.JMenuItem menuItemBright;
-    private javax.swing.JMenuItem menuItemClose;
-    private javax.swing.JMenuItem menuItemCloseAll;
-    private javax.swing.JMenuItem menuItemCopy;
-    private javax.swing.JMenuItem menuItemCut;
-    private javax.swing.JMenuItem menuItemHistory;
-    private javax.swing.JMenuItem menuItemLayResize;
-    private javax.swing.JMenuItem menuItemLayRotate;
-    private javax.swing.JMenuItem menuItemLayers;
 
-    private javax.swing.JMenuItem menuItemNew;
-    private javax.swing.JMenuItem menuItemNewLayer;
-    private javax.swing.JMenuItem menuItemOpen;
-    private javax.swing.JMenuItem menuItemOpenLayer;
-
-    private javax.swing.JMenuItem menuItemPaste;
-
-    private javax.swing.JMenuItem menuItemQuit;
-    private javax.swing.JMenuItem menuItemRedo;
-    private javax.swing.JMenuItem menuItemResize;
-    private javax.swing.JMenuItem menuItemRotation;
-    private javax.swing.JMenuItem menuItemSave;
-    private javax.swing.JMenuItem menuItemSelectAll;
-    private javax.swing.JMenuItem menuItemTools;
-    private javax.swing.JMenuItem menuItemUndo;
-    private javax.swing.JMenu menuEdit;
-    private javax.swing.JMenuBar MenuBar;
-    private javax.swing.JMenu menuFile;
-
-    private javax.swing.JMenu menuImage;
-    private javax.swing.JMenu menuLayer;
-    private javax.swing.JMenu menuWindow;
-    private javax.swing.JSpinner spinnerZoom;
-    private TabbedPanes tabbedPane;
-    // End of variables declaration//GEN-END:variables
 
     @Override
     public void update(Observable obs, Object o) {

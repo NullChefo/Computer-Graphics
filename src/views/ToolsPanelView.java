@@ -38,7 +38,6 @@ public class ToolsPanelView extends javax.swing.JDialog {
     private javax.swing.JToggleButton toggleButtonToolRectangle;
     private javax.swing.JToggleButton toggleButtonToolLine;
     private javax.swing.JToggleButton toggleButtonToolOval;
-    //#TODO add more primitives
 
     private javax.swing.JToggleButton toggleButtonToolStar;
     private javax.swing.JToggleButton toggleButtonToolHexagon;
@@ -48,6 +47,11 @@ public class ToolsPanelView extends javax.swing.JDialog {
     private javax.swing.JToggleButton toggleButtonToolTriangle;
     private javax.swing.JToggleButton toggleButtonToolHearth;
 
+
+    private javax.swing.JToggleButton toggleButtonToolCircle3;
+
+
+    //#TODO add more primitives @
 
     private int textX;
     private int textY;
@@ -131,7 +135,6 @@ public class ToolsPanelView extends javax.swing.JDialog {
         toggleButtonToolOval.setIcon(new ImageIcon("src/images/oval.png"));
         toggleButtonToolLine.addActionListener(controller);
         toggleButtonToolLine.setIcon(new ImageIcon("src/images/line.png"));
-        //#TODO add more primitives
 
         toggleButtonToolStar.addActionListener(controller);
         toggleButtonToolStar.setIcon(new ImageIcon("src/images/Star.png"));
@@ -148,6 +151,10 @@ public class ToolsPanelView extends javax.swing.JDialog {
         toggleButtonToolHearth.addActionListener(controller);
         toggleButtonToolHearth.setIcon(new ImageIcon("src/images/heath.png"));
 
+
+        toggleButtonToolCircle3.addActionListener(controller);
+        toggleButtonToolCircle3.setIcon(new ImageIcon("src/images/circle3.png"));
+        //#TODO add more primitives @
 
     }
 
@@ -201,8 +208,6 @@ public class ToolsPanelView extends javax.swing.JDialog {
     }
 
 
-    //#TODO add
-
     public JToggleButton getToggleButtonToolStar() {
         return toggleButtonToolStar;
     }
@@ -230,6 +235,13 @@ public class ToolsPanelView extends javax.swing.JDialog {
     public JToggleButton getToggleButtonToolHearth() {
         return toggleButtonToolHearth;
     }
+
+
+    public JToggleButton getToggleButtonToolCircle3() {
+        return toggleButtonToolCircle3;
+    }
+
+    //#TODO add
 
 
     public JButton getButtonToolColor() {
@@ -304,7 +316,10 @@ public class ToolsPanelView extends javax.swing.JDialog {
         toggleButtonToolTriangle = new JToggleButton();
 
         toggleButtonToolHearth = new JToggleButton();
-        //#TODO add more primitives
+
+        toggleButtonToolCircle3 = new JToggleButton();
+
+        //#TODO add more primitives  @
 
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -333,8 +348,9 @@ public class ToolsPanelView extends javax.swing.JDialog {
         labelToolSize.setMinimumSize(new Dimension(18, 26));
         labelToolSize.setPreferredSize(new Dimension(18, 26));
 
-        //#TODO add more primitives
-        for (JToggleButton jToggleButton : Arrays.asList(toggleButtonToolRectangle, toggleButtonToolOval, toggleButtonToolLine, toggleButtonToolFill, toggleButtonToolCut, toggleButtonToolStar, toggleButtonToolHexagon, toggleButtonToolParallelogram, toggleButtonToolPentagon, toggleButtonToolTrapezoid, toggleButtonToolTriangle, toggleButtonToolHearth)) {
+        //#TODO add more primitives @
+
+        for (JToggleButton jToggleButton : Arrays.asList(toggleButtonToolRectangle, toggleButtonToolOval, toggleButtonToolLine, toggleButtonToolFill, toggleButtonToolCut, toggleButtonToolStar, toggleButtonToolHexagon, toggleButtonToolParallelogram, toggleButtonToolPentagon, toggleButtonToolTrapezoid, toggleButtonToolTriangle, toggleButtonToolHearth,toggleButtonToolCircle3)) {
             jToggleButton.setMaximumSize(new Dimension(45, 40));
             jToggleButton.setMinimumSize(new Dimension(45, 40));
             jToggleButton.setPreferredSize(new Dimension(45, 40));
@@ -379,6 +395,8 @@ public class ToolsPanelView extends javax.swing.JDialog {
                                                                         .addComponent(toggleButtonToolOval, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                         .addComponent(toggleButtonToolHexagon, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                                         .addComponent(toggleButtonToolTrapezoid, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(toggleButtonToolCircle3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                                        // #TODO add here the next shape @
                                                                         .addComponent(toggleButtonToolCut, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 
 
@@ -452,7 +470,9 @@ public class ToolsPanelView extends javax.swing.JDialog {
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 
                                         .addComponent(toggleButtonToolHearth, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-                                //#TODO add more !!!!
+
+                                                .addComponent(toggleButtonToolCircle3, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
+                                //#TODO add more !!!! @
 
                                 )
 

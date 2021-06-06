@@ -18,6 +18,8 @@ import javax.swing.JSpinner;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,6 +50,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
+import java.util.zip.GZIPOutputStream;
+
 import models.CareTaker;
 import models.Moments;
 import models.Model;
@@ -72,6 +76,8 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
     private Font fontText = new Font("Times New Roman", Font.PLAIN, 12);
     private Color col = Color.BLACK;
     private String addText = "";
+    boolean compress = false;
+
     private Creator originator = new Creator();
     private boolean moving = false;
     private boolean hasDraw = false;
@@ -80,7 +86,7 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
     private boolean hasRect = false;
     private boolean hasOval = false;
 
-    //#TODO add more primitives
+
 
     private boolean hasStar = false;
     private boolean hasHexagon = false;
@@ -89,7 +95,9 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
     private boolean hasTrapezoid = false;
     private boolean hasTriangle = false;
     private boolean hasHearth = false;
+    private boolean hasCircle3 = false;
 
+//#TODO add more primitives
 
     private boolean hasLine = false;
     private boolean hasFill = false;
@@ -169,35 +177,40 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                 BufferedImage imageSave = image;
                 int ret = fileChooser.showSaveDialog(mainview);
                 if (ret == JFileChooser.APPROVE_OPTION) {
-                    File f = fileChooser.getSelectedFile();
-                    String filename = f.getPath();
-                    String name = f.getName();
-                    String ext = "png";
+                    File fileChooserSelectedFile = fileChooser.getSelectedFile();
+                    String filename = fileChooserSelectedFile.getPath();
+                    String name = fileChooserSelectedFile.getName();
+                    String fileExtension = "png";
                     if (filename.toLowerCase().endsWith(".png")) {
-                        ext = "PNG";
+                        fileExtension = "PNG";
                     }
                     else if (filename.toLowerCase().endsWith(".jpg")) {
-                        ext = "JPG";
+                        fileExtension = "JPG";
                         imageSave = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
                         Graphics2D graphics2D = imageSave.createGraphics();
                         graphics2D.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
                     }
                     else if (filename.toLowerCase().endsWith(".gif")) {
-                        ext = "GIF";
+                        fileExtension = "GIF";
                     }
                     else if (filename.toLowerCase().endsWith(".bmp")) {
-                        ext = "BMP";
+                        fileExtension = "BMP";
                         imageSave = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
                         Graphics2D graphics2D = imageSave.createGraphics();
                         graphics2D.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
                     }
                     else if (filename.toLowerCase().endsWith(".proj"))
-                        ext = "PROJ";
+                        fileExtension = "PROJ";
+
+                    else if (filename.toLowerCase().endsWith(".proj.gz")) {
+                        fileExtension = "GZ";
+                        compress = true;
+                    }
                     else {
                         filename = filename + ".png";
                     }
 
-                    if (ext.compareTo("PROJ") == 0) {
+                    if (fileExtension.compareTo("PROJ") == 0) {
                         ImagePanel imageP = mainview.getProjects().get(mainview.getTabs().getSelectedIndex());
                         ImagePanel imageSav;
                         File file = new File(filename);
@@ -213,10 +226,10 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                             imageP.buildLayersPix();
                             objectOutputStream.writeObject(imageP.getLayers());
                             objectOutputStream.writeObject(imageP.getCareTaker().getStates().size());
-                            for (Moments mem : imageP.getCareTaker().getStates()) {
-                                objectOutputStream.writeObject(mem.getSavedState());
-                                objectOutputStream.writeObject(mem.getIconPix());
-                                imageSav = mem.getSavedImg();
+                            for (Moments moments : imageP.getCareTaker().getStates()) {
+                                objectOutputStream.writeObject(moments.getSavedState());
+                                objectOutputStream.writeObject(moments.getIconPix());
+                                imageSav = moments.getSavedImg();
                                 objectOutputStream.writeObject(imageSav.getFileName());
                                 objectOutputStream.writeObject(imageSav.getFilePath());
                                 objectOutputStream.writeObject(imageSav.getZoom());
@@ -227,15 +240,61 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                                 objectOutputStream.writeObject(imageSav.getLayers());
                             }
                             objectOutputStream.close();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+                    }
+
+                    // Added compressed version of the project file format ".proj.gz"
+                    // This was added because the .proj files gets actually big if you trying to work with
+                    // Large pixel density
+
+                    else if (fileExtension.compareTo("GZ") == 0) {
+                        ImagePanel imagePanel = mainview.getProjects().get(mainview.getTabs().getSelectedIndex());
+                        ImagePanel imageSav;
+                        FileOutputStream fileOutputStream;
+                        GZIPOutputStream gzipOutputStream;
+                        ObjectOutputStream objectOutputStream;
+                        try {
+                            fileOutputStream = new FileOutputStream(filename);
+                            gzipOutputStream = new GZIPOutputStream(fileOutputStream);
+                            objectOutputStream = new ObjectOutputStream(gzipOutputStream);
+                            objectOutputStream.writeObject(imagePanel.getFileName());
+                            objectOutputStream.writeObject(imagePanel.getFilePath());
+                            objectOutputStream.writeObject(imagePanel.getZoom());
+                            objectOutputStream.writeObject(imagePanel.getImgW());
+                            objectOutputStream.writeObject(imagePanel.getImgH());
+                            objectOutputStream.writeObject(imagePanel.getNbLayers());
+                            objectOutputStream.writeObject(imagePanel.getIndexSelect());
+                            imagePanel.buildLayersPix();
+                            objectOutputStream.writeObject(imagePanel.getLayers());
+                            objectOutputStream.writeObject(imagePanel.getCareTaker().getStates().size());
+                            for (Moments moments : imagePanel.getCareTaker().getStates()) {
+                                objectOutputStream.writeObject(moments.getSavedState());
+                                objectOutputStream.writeObject(moments.getIconPix());
+                                imageSav = moments.getSavedImg();
+                                objectOutputStream.writeObject(imageSav.getFileName());
+                                objectOutputStream.writeObject(imageSav.getFilePath());
+                                objectOutputStream.writeObject(imageSav.getZoom());
+                                objectOutputStream.writeObject(imageSav.getImgW());
+                                objectOutputStream.writeObject(imageSav.getImgH());
+                                objectOutputStream.writeObject(imageSav.getNbLayers());
+                                objectOutputStream.writeObject(imageSav.getIndexSelect());
+                                objectOutputStream.writeObject(imageSav.getLayers());
+                            }
+                            objectOutputStream.flush();
+                            objectOutputStream.close();
+                            gzipOutputStream.close();
+                            fileOutputStream.close();
+                        } catch(IOException ioException) {
+                            ioException.printStackTrace();
                         }
                     }
 
                     else {
                         File outputFile = new File(filename);
                         try {
-                            ImageIO.write(imageSave, ext, outputFile);
+                            ImageIO.write(imageSave, fileExtension, outputFile);
                         } catch (IOException ex) {
                             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -291,36 +350,36 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                 ImagePanel image = mainview.getProjects().get(mainview.getTabs().getSelectedIndex());
                 LayerPanel layer = image.getLayers().get(image.getIndexSelect());
                 BufferedImage bufferedImage = layer.getImage();
-                int ix = (int)((float)image.getInitX()*100/image.getZoom())- layer.getLocalX();
-                int fx = (int)((float)image.getCursorX()*100/image.getZoom())- layer.getLocalX();
-                int iy = (int)((float)image.getInitY()*100/image.getZoom())- layer.getLocalY();
-                int fy = (int)((float)image.getCursorY()*100/image.getZoom())- layer.getLocalY();
-                if (ix > fx) {
-                    int tmp = fx;
-                    fx = ix;
-                    ix = tmp;
+                int iX = (int)((float)image.getInitX()*100/image.getZoom())- layer.getLocalX();
+                int fX = (int)((float)image.getCursorX()*100/image.getZoom())- layer.getLocalX();
+                int iY = (int)((float)image.getInitY()*100/image.getZoom())- layer.getLocalY();
+                int fY = (int)((float)image.getCursorY()*100/image.getZoom())- layer.getLocalY();
+                if (iX > fX) {
+                    int tmp = fX;
+                    fX = iX;
+                    iX = tmp;
                 }
-                if (iy > fy) {
-                    int tmp = fy;
-                    fy = iy;
-                    iy = tmp;
+                if (iY > fY) {
+                    int tmp = fY;
+                    fY = iY;
+                    iY = tmp;
                 }
-                if (fx > 0 && fy > 0 && ix < bufferedImage.getWidth()-1 && iy < bufferedImage.getHeight()-1) {
-                    ix = Math.max(ix, 0);
-                    iy = Math.max(iy, 0);
-                    fx = Math.min(fx, bufferedImage.getWidth() - 1);
-                    fy = Math.min(fy, bufferedImage.getHeight() - 1);
-                    int w = Math.abs(fx-ix);
-                    int h = Math.abs(fy-iy);
+                if (fX > 0 && fY > 0 && iX < bufferedImage.getWidth()-1 && iY < bufferedImage.getHeight()-1) {
+                    iX = Math.max(iX, 0);
+                    iY = Math.max(iY, 0);
+                    fX = Math.min(fX, bufferedImage.getWidth() - 1);
+                    fY = Math.min(fY, bufferedImage.getHeight() - 1);
+                    int w = Math.abs(fX - iX);
+                    int h = Math.abs(fY - iY);
                     int argb = new Color(255,255,255,0).getRGB();
                     imgSelect = new BufferedImage(w,h,BufferedImage.TYPE_4BYTE_ABGR);
                     for (int y = 0; y < h; y++) {
                         for (int x = 0; x < w; x++) {
-                            imgSelect.setRGB(x, y, bufferedImage.getRGB(ix+x, iy+y));
+                            imgSelect.setRGB(x, y, bufferedImage.getRGB(iX +x, iY +y));
                         }
                     }
-                    for (int y = iy; y < iy+h; y++) {
-                        for (int x = ix; x < ix+w; x++) {
+                    for (int y = iY; y < iY +h; y++) {
+                        for (int x = iX; x < iX +w; x++) {
                             bufferedImage.setRGB(x, y, argb);
                         }
                     }
@@ -475,25 +534,14 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
         }
         else if (e.getSource().getClass() == JButton.class) {
             JButton button = (JButton)e.getSource();
-            if (button == mainview.getStopFilter()) {
-                int index = mainview.getTabs().getSelectedIndex();
-                if (index != -1) {
-                    Thread th = mainview.getProjects().get(index).getThread();
-                    if (th != null) {
-                        th.stop();
-                        mainview.getProjects().get(mainview.getTabs().getSelectedIndex()).getParent().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                        mainview.getProjects().get(index).setThread(null);
-                        mainview.getStopFilter().setEnabled(false);
-                    }
-                }
-            }
-            else if (button == mainview.getRotView().getButtonRotation()) {
+
+             if (button == mainview.getRotView().getButtonRotation()) {
                 ImagePanel image = mainview.getProjects().get(mainview.getTabs().getSelectedIndex());
                 ((Panels)image.getParent()).clearRect();
                 image.rotateExec((float)mainview.getRotView().getSpinnerAngle().getValue());
                 mainview.getRotView().setVisible(false);
                 image.setHasRot(false);
-                //image.updateZoomImg();
+
                 this.updateLayers();
                 mainview.updateWindow();
                 if (image.getRotateProj())
@@ -518,13 +566,11 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                 {
                     ((Panels)image.getParent()).clearRect();
                     image.setHasRot(false);
-                    //image.updateZoomImg();
                     image.getParent().getParent().validate();
                     mainview.getRotView().setVisible(false);
                 }
                 else {
                     image.setHasRot(false);
-                    //image.updateZoomImg();
                     image.repaint();
                     mainview.getRotView().setVisible(false);
                 }
@@ -917,7 +963,7 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                 mainview.getProjects().get(mainview.getTabs().getSelectedIndex()).repaint();
             }
 
-            //#TODO add more primitives
+
 
             else if (button == mainview.getToolsView().getToggleButtonToolStar()) {
                 if (button == toggleButton) {
@@ -1013,6 +1059,22 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                         toggleButton.doClick();
                     toggleButton = button;
                     hasHearth = true;
+                }
+                mainview.getProjects().get(mainview.getTabs().getSelectedIndex()).repaint();
+            }
+            //#TODO add more primitives
+
+
+            else if (button == mainview.getToolsView().getToggleButtonToolCircle3()) {
+                if (button == toggleButton) {
+                    toggleButton = null;
+                    hasCircle3 = false;
+                }
+                else {
+                    if (toggleButton != null)
+                        toggleButton.doClick();
+                    toggleButton = button;
+                    hasCircle3 = true;
                 }
                 mainview.getProjects().get(mainview.getTabs().getSelectedIndex()).repaint();
             }
@@ -1233,9 +1295,7 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
             if (tp == mainview.getTabs() && tp.getSelectedIndex() != -1) {
                 ImagePanel image = mainview.getProjects().get(mainview.getTabs().getSelectedIndex());
                 if (image.getThread() == null)
-                    mainview.getStopFilter().setEnabled(false);
-                else
-                    mainview.getStopFilter().setEnabled(true);
+
                 mainview.getRotView().setVisible(false);
                 if (image.getRotateProj())
                     mainview.getRotView().setTitle("Rotate Image");
@@ -1634,7 +1694,7 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                 image.setHasRect(true);
             }
 
-            //#TODO 3 add setHasShape -> and add in ->Image panel
+
 
             else if (hasOval) {
                 image.setHasOval(true);
@@ -1662,6 +1722,12 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
             else if (hasHearth) {
                 image.setHasHearth(true);
             }
+
+            else if (hasCircle3) {
+                image.setHasHearth(true);
+            }
+
+            //#TODO 3 add setHasShape -> and add in ->Image panel
 
             else if (hasLine) {
                 image.setHasLine(true);
@@ -1734,7 +1800,10 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                     graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
                     graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-                    graphics2D.fillRect((int)((float)sx*100/image.getZoom())- layer.getLocalX()-1, (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1, (int)((float)sw*100/image.getZoom()), (int)((float)sh*100/image.getZoom()));
+                    int x = (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1;
+                    int y = (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1;
+
+                    graphics2D.fillRect(x, y, (int)((float)sw*100/image.getZoom()), (int)((float)sh*100/image.getZoom()));
 
                     image.getCareTaker().addMemento(mainview.getController().getOriginator().saveToMemento("Draw rect on "+image.getLayers().get(image.getIndexSelect()).getFileName(),image.getImagePanelCopy(),image.getBuiltImage()));
                     this.updateHist();
@@ -1761,8 +1830,10 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                     graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                     graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
                     graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                    int x = (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1;
+                    int y = (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1;
 
-                    graphics2D.fillOval((int)((float)sx*100/image.getZoom())- layer.getLocalX()-1, (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1, (int)((float)sw*100/image.getZoom()), (int)((float)sh*100/image.getZoom()));
+                    graphics2D.fillOval(x, y, (int)((float)sw*100/image.getZoom()), (int)((float)sh*100/image.getZoom()));
 
                     image.getCareTaker().addMemento(mainview.getController().getOriginator().saveToMemento("Draw oval on "+image.getLayers().get(image.getIndexSelect()).getFileName(),image.getImagePanelCopy(),image.getBuiltImage()));
                     this.updateHist();
@@ -1770,7 +1841,7 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                 }
             }
 
-            //#TODO 6 add here the thr formulas
+
 
 
             else if (hasStar) {
@@ -1789,9 +1860,10 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                     graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                     graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
                     graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                    int x = (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1;
+                    int y = (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1;
 
-
-                    graphics2D.fill(createDefStar((int)((float)sx*100/image.getZoom())- layer.getLocalX()-1, (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1, (int)((float)sw*100/image.getZoom()), (int)((float)sh*100/image.getZoom())));
+                    graphics2D.fill(createDefStar(x, y, (int)((float)sw*100/image.getZoom()), (int)((float)sh*100/image.getZoom())));
 
                     image.getCareTaker().addMemento(mainview.getController().getOriginator().saveToMemento("Draw star on "+image.getLayers().get(image.getIndexSelect()).getFileName(),image.getImagePanelCopy(),image.getBuiltImage()));
                     this.updateHist();
@@ -1818,8 +1890,10 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                     graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
                     int radius = Math.abs((int)((float)sw*100/image.getZoom())-(int)((float)sh*100/image.getZoom()));
+                    int x = (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1;
+                    int y = (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1;
 
-                    Hexagon hexagon = new Hexagon( new Point((int)((float)sx*100/image.getZoom())- layer.getLocalX()-1, (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1), radius);
+                    Hexagon hexagon = new Hexagon( new Point(x, y), radius);
 
 
                     graphics2D.fill(hexagon.getHexagon());
@@ -1847,9 +1921,11 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                     graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
                     graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
+                    int x = (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1;
+                    int y = (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1;
 
 
-                    Parallelogram parallelogram = new Parallelogram( (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1, (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1,sw, sh,0,col,graphics2D);
+                    Parallelogram parallelogram = new Parallelogram( x, y,sw, sh,0,col,graphics2D);
 
 
                     image.getCareTaker().addMemento(mainview.getController().getOriginator().saveToMemento("Draw parallelogram on "+image.getLayers().get(image.getIndexSelect()).getFileName(),image.getImagePanelCopy(),image.getBuiltImage()));
@@ -1879,8 +1955,12 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                     graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
                     int radius = Math.abs((int)((float)sw*100/image.getZoom())-(int)((float)sh*100/image.getZoom()));
+                    int x = (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1;
+                    int y = (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1;
 
-                    Pentagon pentagon = new Pentagon( new Point((int)((float)sx*100/image.getZoom())- layer.getLocalX()-1, (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1), radius);
+                    Pentagon pentagon = new Pentagon( new Point(x, y), radius);
+
+                    graphics2D.rotate(Math.toRadians( 54 ),x,y);
 
                     graphics2D.fill(pentagon.getPentagon());
                     image.getCareTaker().addMemento(mainview.getController().getOriginator().saveToMemento("Draw pentagon on "+image.getLayers().get(image.getIndexSelect()).getFileName(),image.getImagePanelCopy(),image.getBuiltImage()));
@@ -1905,8 +1985,10 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                     graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                     graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
                     graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                    int x = (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1;
+                    int y = (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1;
 
-                    Trapezoid trapezoid = new Trapezoid((int)((float)sx*100/image.getZoom())- layer.getLocalX()-1, (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1,sw,sh,col,graphics2D);
+                    Trapezoid trapezoid = new Trapezoid(x, y,sw,sh,col,graphics2D);
 
                     image.getCareTaker().addMemento(mainview.getController().getOriginator().saveToMemento("Draw trapezoid on "+image.getLayers().get(image.getIndexSelect()).getFileName(),image.getImagePanelCopy(),image.getBuiltImage()));
                     this.updateHist();
@@ -1934,11 +2016,14 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
 
 
                     int radius = Math.abs((int)((float)sw*100/image.getZoom())-(int)((float)sh*100/image.getZoom()));
+                    int x = (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1;
+                    int y = (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1;
 
-                    Triangle pentagon = new Triangle( new Point((int)((float)sx*100/image.getZoom())- layer.getLocalX()-1, (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1), radius);
+                    Triangle triangle = new Triangle( new Point(x,y), radius);
 
+                    graphics2D.rotate(Math.toRadians( 30 ),x,y);
 
-                    graphics2D.fill(pentagon.getTriangle());
+                    graphics2D.fill(triangle.getTriangle());
 
                     image.getCareTaker().addMemento(mainview.getController().getOriginator().saveToMemento("Draw triangle on "+image.getLayers().get(image.getIndexSelect()).getFileName(),image.getImagePanelCopy(),image.getBuiltImage()));
                     this.updateHist();
@@ -1964,16 +2049,60 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
                     graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
                     graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
+                    int radius = Math.abs((int)((float)sw*100/image.getZoom())-(int)((float)sh*100/image.getZoom()));
+                    int x = (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1;
+                    int y = (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1;
 
 
                     Heart heart = new Heart();
-                    int radius = Math.abs((int)((float)sw*100/image.getZoom())-(int)((float)sh*100/image.getZoom()));
-                    graphics2D.fill(heart.Heart((int)((float)sx*100/image.getZoom())- layer.getLocalX()-1 , (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1 ,radius));
+
+                    graphics2D.fill(heart.Heart(x , y ,radius));
                     image.getCareTaker().addMemento(mainview.getController().getOriginator().saveToMemento("Draw hearth on "+ image.getLayers().get(image.getIndexSelect()).getFileName(),image.getImagePanelCopy(),image.getBuiltImage()));
                     this.updateHist();
                     mainview.getTabs().grabFocus();
                 }
             }
+
+            //#TODO 6 add here the thr formulas
+
+
+
+            else if (hasCircle3) {
+                image.setHasHearth(false);
+                int ix = image.getInitX();
+                int fx = image.getCursorX();
+                int iy = image.getInitY();
+                int fy = image.getCursorY();
+                int sx = Math.min(ix, fx);
+                int sy = Math.min(iy, fy);
+                int sw = Math.abs(ix-fx);
+                int sh = Math.abs(iy-fy);
+                if (ix != fx && iy != fy) {
+                    Graphics2D graphics2D = layer.getImage().createGraphics();
+                    graphics2D.setColor(col);
+                    graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+                    graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+                    int radius = Math.abs((int)((float)sw*100/image.getZoom())-(int)((float)sh*100/image.getZoom()));
+                    int x = (int)((float)sx*100/image.getZoom())- layer.getLocalX()-1;
+                    int y = (int)((float)sy*100/image.getZoom())- layer.getLocalY()-1;
+
+
+
+                    // #TODO FIX
+                  //  Circle3 circle3 = new Circle3(x,y,sw,sh,col,graphics2D, radius);
+                   System.out.println("TODO FIX");
+
+
+
+
+                    image.getCareTaker().addMemento(mainview.getController().getOriginator().saveToMemento("Draw hearth on "+ image.getLayers().get(image.getIndexSelect()).getFileName(),image.getImagePanelCopy(),image.getBuiltImage()));
+                    this.updateHist();
+                    mainview.getTabs().grabFocus();
+                }
+            }
+
 
 
 
@@ -2023,8 +2152,7 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
     public void mouseEntered(MouseEvent e) {
         if (e.getSource().getClass() == ImagePanel.class) {
             ImagePanel image = mainview.getProjects().get(mainview.getTabs().getSelectedIndex());
-            if (mainview.getButtonStopFilter().isEnabled())
-                image.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
             if (toggleButton == mainview.getToolsView().getToggleButtonToolText())
                 image.setCursor(new Cursor(Cursor.TEXT_CURSOR));
             else if (toggleButton == mainview.getToolsView().getToggleButtonToolMove())
@@ -2032,7 +2160,7 @@ public class Controller implements ActionListener, MouseListener, ChangeListener
 
                 //#TODO 6 add here the hasShape
 
-            else if (hasRect || hasOval || hasLine || hasCut || hasSelect || hasStar || hasHexagon || hasPentagon || hasTrapezoid || hasTriangle || hasHearth  )
+            else if (hasRect || hasOval || hasLine || hasCut || hasSelect || hasStar || hasHexagon || hasPentagon || hasTrapezoid || hasTriangle || hasHearth || hasCircle3  )
                 image.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
             else if (hasFill || hasPipette)
                 image.setCursor(new Cursor(Cursor.HAND_CURSOR));

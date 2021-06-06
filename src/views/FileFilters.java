@@ -17,7 +17,8 @@ public class FileFilters extends FileFilter {
                     s.substring(i + 1).toLowerCase().equals("png") ||
                     s.substring(i + 1).toLowerCase().equals("bmp") ||
                     s.substring(i + 1).toLowerCase().equals("gif") ||
-                    s.substring(i + 1).toLowerCase().equals("proj"))
+                    s.substring(i + 1).toLowerCase().equals("proj") ||
+                    s.substring(i + 1).toLowerCase().equals("gz"))
                 return true;
 
         return false;
