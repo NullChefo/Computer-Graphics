@@ -1,13 +1,22 @@
 package views;
 
 import controller.Controller;
-import java.awt.Font;
+
 import javax.swing.*;
+import java.awt.*;
 
 
 public class NewView extends javax.swing.JDialog {
     private MainView mainview;
     private Controller control;
+    // Variables declaration
+    private javax.swing.JButton buttonNewCancel;
+    private javax.swing.JButton buttonNewCreate;
+    private javax.swing.JColorChooser colorChooser;
+    private javax.swing.JSpinner spinnerNewHeight;
+    private javax.swing.JSpinner spinnerNewWidth;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
 
     /**
      * Creates new form NewView
@@ -16,16 +25,49 @@ public class NewView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
-        mainview = (MainView)parent;
+        mainview = (MainView) parent;
         control = mainview.getController();
         final JLabel previewLabel = new JLabel("Project CG & GPI", JLabel.CENTER);
         previewLabel.setFont(new Font("New Times Roman", Font.BOLD, 50));
         previewLabel.setSize(previewLabel.getPreferredSize());
-        previewLabel.setBorder(BorderFactory.createEmptyBorder(0,0,1,0));
+        previewLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 1, 0));
         colorChooser.setPreviewPanel(previewLabel);
         this.buttonNewCreate.addActionListener(control);
         this.buttonNewCancel.addActionListener(control);
         this.setTitle("New image - Project CG & GPI");
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(NewView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                NewView dialog = new NewView(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
     }
 
     public JButton getButtonNewCreate() {
@@ -128,46 +170,5 @@ public class NewView extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                NewView dialog = new NewView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
-    // Variables declaration
-    private javax.swing.JButton buttonNewCancel;
-    private javax.swing.JButton buttonNewCreate;
-    private javax.swing.JColorChooser colorChooser;
-    private javax.swing.JSpinner spinnerNewHeight;
-    private javax.swing.JSpinner spinnerNewWidth;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     // End of variables declaration
 }

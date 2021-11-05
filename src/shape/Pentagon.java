@@ -15,6 +15,7 @@ public class Pentagon {
         this.pentagon = createPentagon();
 
     }
+
     private Polygon createPentagon() {
         Polygon polygon = new Polygon();
 

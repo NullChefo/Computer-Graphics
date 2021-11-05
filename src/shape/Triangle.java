@@ -16,6 +16,7 @@ public class Triangle {
         this.triangle = createTriangle();
 
     }
+
     private Polygon createTriangle() {
         Polygon polygon = new Polygon();
 

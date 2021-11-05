@@ -1,10 +1,9 @@
 package views;
 
 import controller.Controller;
-import java.awt.Point;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JSlider;
+
+import javax.swing.*;
+import java.awt.*;
 
 
 public class ColorBalanceView extends javax.swing.JDialog {
@@ -36,9 +35,9 @@ public class ColorBalanceView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setLocation(new Point((int)(parent.getLocation().getX()+parent.getWidth()-this.getWidth()),(int)(parent.getLocation().getY())));
+        this.setLocation(new Point((int) (parent.getLocation().getX() + parent.getWidth() - this.getWidth()), (int) (parent.getLocation().getY())));
         this.setVisible(false);
-        mainview = (MainView)parent;
+        mainview = (MainView) parent;
         control = mainview.getController();
         sliderRed.addChangeListener(control);
         sliderGreen.addChangeListener(control);
@@ -46,6 +45,23 @@ public class ColorBalanceView extends javax.swing.JDialog {
         sliderAlpha.addChangeListener(control);
         buttonBalanceExec.addActionListener(control);
         buttonBalanceCancel.addActionListener(control);
+    }
+
+    public static void main(String args[]) {
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                ColorBalanceView dialog = new ColorBalanceView(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
     }
 
     public JSlider getSliderRed() {
@@ -260,23 +276,6 @@ public class ColorBalanceView extends javax.swing.JDialog {
         );
 
         pack();
-    }
-
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                ColorBalanceView dialog = new ColorBalanceView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
     }
 
 }

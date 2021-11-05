@@ -1,22 +1,24 @@
 package shape;
 
 import java.awt.*;
-import java.awt.geom.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 
 public class Circle3 {
 
-    private int x,y,w,h,radius;
+    private int x, y, w, h, radius;
     private Color color;
     private Graphics2D graphics2D;
 
-    public Circle3(int x, int y, int w, int h, Color color, Graphics2D graphics2D,int radius) {
-        this.x=x;
-        this.y=y;
-        this.w=w;
-        this.h=h;
-        this.color=color;
-        this.graphics2D=graphics2D;
-        this.radius=radius;
+    public Circle3(int x, int y, int w, int h, Color color, Graphics2D graphics2D, int radius) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.color = color;
+        this.graphics2D = graphics2D;
+        this.radius = radius;
         createCircle3();
     }
 
@@ -45,6 +47,7 @@ public class Circle3 {
         g2d.draw(gp);
 
     }
+
     protected Point2D pointOnCircle(double degrees, double radius) {
         double origin = radius;
         double rads = Math.toRadians(degrees);

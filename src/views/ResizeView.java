@@ -1,10 +1,11 @@
 package views;
 
 import controller.Controller;
-import java.awt.Point;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.*;
 
 
 public class ResizeView extends javax.swing.JDialog implements Observer {
@@ -12,15 +13,22 @@ public class ResizeView extends javax.swing.JDialog implements Observer {
     private Controller control;
     private boolean bind = true;
     private boolean hasChange = false;
-
+    // Variables declaration
+    private javax.swing.JButton buttonResizeBind;
+    private javax.swing.JButton buttonResizeReset;
+    private javax.swing.JButton buttonResizeResize;
+    private javax.swing.JSpinner spinnerResizeHeight;
+    private javax.swing.JSpinner spinnerResizeWidth;
+    private javax.swing.JLabel labelWidth;
+    private javax.swing.JLabel labelHeight;
 
     public ResizeView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setLocation(new Point((int)(parent.getLocation().getX()+parent.getWidth()-this.getWidth()),(int)(parent.getLocation().getY())));
+        this.setLocation(new Point((int) (parent.getLocation().getX() + parent.getWidth() - this.getWidth()), (int) (parent.getLocation().getY())));
         this.setVisible(false);
-        mainview = (MainView)parent;
+        mainview = (MainView) parent;
         control = mainview.getController();
         control.addObserver(this);
         spinnerResizeWidth.addChangeListener(control);
@@ -29,6 +37,44 @@ public class ResizeView extends javax.swing.JDialog implements Observer {
         buttonResizeResize.addActionListener(control);
         buttonResizeReset.addActionListener(control);
         buttonResizeBind.setIcon(new ImageIcon("src/images/bind.png"));
+    }
+
+    static void setFont(JLabel jLabel1, JLabel jLabel2) {
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 14));
+        jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
+        jLabel1.setText("width (px)");
+
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 14));
+        jLabel2.setHorizontalAlignment(SwingConstants.CENTER);
+        jLabel2.setText("height (px)");
+    }
+
+    public static void main(String args[]) {
+
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ResizeView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                ResizeView dialog = new ResizeView(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
     }
 
     public JSpinner getSpinnerResizeWidth() {
@@ -58,7 +104,6 @@ public class ResizeView extends javax.swing.JDialog implements Observer {
     public void setBind(boolean b) {
         bind = b;
     }
-
 
     @SuppressWarnings("unchecked")
     private void initComponents() {
@@ -134,52 +179,6 @@ public class ResizeView extends javax.swing.JDialog implements Observer {
 
         pack();
     }
-
-    static void setFont(JLabel jLabel1, JLabel jLabel2) {
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 14));
-        jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-        jLabel1.setText("width (px)");
-
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 14));
-        jLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-        jLabel2.setText("height (px)");
-    }
-
-    public static void main(String args[]) {
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ResizeView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                ResizeView dialog = new ResizeView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
-    // Variables declaration
-    private javax.swing.JButton buttonResizeBind;
-    private javax.swing.JButton buttonResizeReset;
-    private javax.swing.JButton buttonResizeResize;
-    private javax.swing.JSpinner spinnerResizeHeight;
-    private javax.swing.JSpinner spinnerResizeWidth;
-    private javax.swing.JLabel labelWidth;
-    private javax.swing.JLabel labelHeight;
     // End of variables declaration
 
     @Override
@@ -188,48 +187,43 @@ public class ResizeView extends javax.swing.JDialog implements Observer {
             if (bind) {
                 bind = false;
                 buttonResizeBind.setIcon(new ImageIcon("src/images/unbind.png"));
-            }
-            else {
+            } else {
                 bind = true;
                 buttonResizeBind.setIcon(new ImageIcon("src/images/bind.png"));
             }
-        }
-        else if (o == spinnerResizeWidth) {
+        } else if (o == spinnerResizeWidth) {
             if (bind) {
                 if (mainview.getProjects().get(mainview.getTabs().getSelectedIndex()).getResizeProj()) {
                     if (!hasChange) {
                         ImagePanel img = mainview.getProjects().get(mainview.getTabs().getSelectedIndex());
                         hasChange = true;
-                        spinnerResizeHeight.setValue((int)((float)((int) spinnerResizeWidth.getValue())*img.getImgH()/img.getImgW()));
+                        spinnerResizeHeight.setValue((int) ((float) ((int) spinnerResizeWidth.getValue()) * img.getImgH() / img.getImgW()));
                         hasChange = false;
                     }
-                }
-                else if (!hasChange) {
+                } else if (!hasChange) {
                     ImagePanel img = mainview.getProjects().get(mainview.getTabs().getSelectedIndex());
                     float w = img.getLayers().get(img.getIndexSelect()).getImage().getWidth();
                     float h = img.getLayers().get(img.getIndexSelect()).getImage().getHeight();
                     hasChange = true;
-                    spinnerResizeHeight.setValue((int)((float)((int) spinnerResizeWidth.getValue())*h/w));
+                    spinnerResizeHeight.setValue((int) ((float) ((int) spinnerResizeWidth.getValue()) * h / w));
                     hasChange = false;
                 }
             }
-        }
-        else if (o == spinnerResizeHeight) {
+        } else if (o == spinnerResizeHeight) {
             if (bind) {
                 if (mainview.getProjects().get(mainview.getTabs().getSelectedIndex()).getResizeProj()) {
                     if (!hasChange) {
                         ImagePanel img = mainview.getProjects().get(mainview.getTabs().getSelectedIndex());
                         hasChange = true;
-                        spinnerResizeHeight.setValue((int)((float)((int) spinnerResizeWidth.getValue())*img.getImgW()/img.getImgH()));
+                        spinnerResizeHeight.setValue((int) ((float) ((int) spinnerResizeWidth.getValue()) * img.getImgW() / img.getImgH()));
                         hasChange = false;
                     }
-                }
-                else if (!hasChange) {
+                } else if (!hasChange) {
                     ImagePanel img = mainview.getProjects().get(mainview.getTabs().getSelectedIndex());
                     float w = img.getLayers().get(img.getIndexSelect()).getImage().getWidth();
                     float h = img.getLayers().get(img.getIndexSelect()).getImage().getHeight();
                     hasChange = true;
-                    spinnerResizeWidth.setValue((int)((float)((int) spinnerResizeHeight.getValue())*w/h));
+                    spinnerResizeWidth.setValue((int) ((float) ((int) spinnerResizeHeight.getValue()) * w / h));
                     hasChange = false;
                 }
             }

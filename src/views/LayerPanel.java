@@ -1,11 +1,9 @@
 package views;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
-import javax.swing.JPanel;
 
 public class LayerPanel extends JPanel implements Serializable {
     private int localX;
@@ -36,16 +34,16 @@ public class LayerPanel extends JPanel implements Serializable {
         localH = image.getHeight();
     }
 
-    public void setIsShowed(boolean b) {
-        isShowed = b;
-    }
-
     public boolean getIsShowed() {
         return isShowed;
     }
 
+    public void setIsShowed(boolean b) {
+        isShowed = b;
+    }
+
     public LayerPanel getLayerPanelCopy() {
-        LayerPanel layerCopy = new LayerPanel(image,fileName, localX, localY);
+        LayerPanel layerCopy = new LayerPanel(image, fileName, localX, localY);
         layerCopy.setIsShowed(isShowed);
         layerCopy.ImageToPixels();
         return layerCopy;
@@ -54,7 +52,7 @@ public class LayerPanel extends JPanel implements Serializable {
     public LayerPanel getLaySavedCopy() {
         BufferedImage layerImage = new BufferedImage(localW, localH, BufferedImage.TYPE_4BYTE_ABGR);
         layerImage.setRGB(0, 0, localW, localH, pixels, 0, localW);
-        LayerPanel layer = new LayerPanel(layerImage,fileName, localX, localY);
+        LayerPanel layer = new LayerPanel(layerImage, fileName, localX, localY);
         layer.setIsShowed(isShowed);
         return layer;
     }
@@ -127,16 +125,16 @@ public class LayerPanel extends JPanel implements Serializable {
     }
 
     public BufferedImage getLayIcon() {
-        BufferedImage ico = new BufferedImage(50,50,BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage ico = new BufferedImage(50, 50, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D graphics2D = ico.createGraphics();
 
-        Color c1 = new Color(102,102,102,255);
-        Color c2 = new Color(153,153,153,255);
+        Color c1 = new Color(102, 102, 102, 255);
+        Color c2 = new Color(153, 153, 153, 255);
         Color c3;
         graphics2D.setColor(c2);
-        for (int i = 0; i < 50; i+=10) {
+        for (int i = 0; i < 50; i += 10) {
             c3 = graphics2D.getColor();
-            for (int j = 0; j < 50; j+=10) {
+            for (int j = 0; j < 50; j += 10) {
                 graphics2D.fillRect(j, i, 10, 10);
                 if (graphics2D.getColor() == c2)
                     graphics2D.setColor(c1);
@@ -152,7 +150,7 @@ public class LayerPanel extends JPanel implements Serializable {
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        graphics2D.drawImage(image,0,0, 50, 50, null);
+        graphics2D.drawImage(image, 0, 0, 50, 50, null);
         graphics2D.dispose();
         return ico;
     }

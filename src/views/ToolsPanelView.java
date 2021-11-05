@@ -2,27 +2,24 @@ package views;
 
 import controller.Controller;
 
-import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.util.Hashtable;
+import java.util.Arrays;
 
 
 public class ToolsPanelView extends javax.swing.JDialog {
 
-    private MainView mainView;
-    private Controller controller;
+    private final MainView mainView;
+    private final Controller controller;
+    private final BufferedImage bufferedImage;
+    private final JColorChooser colorChooser;
+    private final JDialog dialogView;
     private Color colorBlack = Color.BLACK;
-    private BufferedImage bufferedImage;
-    private JColorChooser colorChooser;
-    private JDialog dialogView;
-
     private javax.swing.JButton buttonToolColor;
     private javax.swing.JLabel labelToolSize;
     private javax.swing.JSlider sliderToolSize;
@@ -46,9 +43,6 @@ public class ToolsPanelView extends javax.swing.JDialog {
     private javax.swing.JToggleButton toggleButtonToolTrapezoid;
     private javax.swing.JToggleButton toggleButtonToolTriangle;
     private javax.swing.JToggleButton toggleButtonToolHearth;
-
-
-    private javax.swing.JToggleButton toggleButtonToolCircle3;
 
 
     //#TODO add more primitives @
@@ -151,17 +145,41 @@ public class ToolsPanelView extends javax.swing.JDialog {
         toggleButtonToolHearth.addActionListener(controller);
         toggleButtonToolHearth.setIcon(new ImageIcon("src/images/heath.png"));
 
-
-        toggleButtonToolCircle3.addActionListener(controller);
-        toggleButtonToolCircle3.setIcon(new ImageIcon("src/images/circle3.png"));
         //#TODO add more primitives @
 
+    }
+
+    public static void main(String[] args) {
+
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | InstantiationException | IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ToolsPanelView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                ToolsPanelView dialog = new ToolsPanelView(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
     }
 
     public JToggleButton getToggleButtonToolText() {
         return toggleButtonToolText;
     }
-
 
     public JToggleButton getToggleButtonToolPipette() {
         return toggleButtonToolPipette;
@@ -207,7 +225,6 @@ public class ToolsPanelView extends javax.swing.JDialog {
         return toggleButtonToolClear;
     }
 
-
     public JToggleButton getToggleButtonToolStar() {
         return toggleButtonToolStar;
     }
@@ -232,17 +249,12 @@ public class ToolsPanelView extends javax.swing.JDialog {
         return toggleButtonToolTriangle;
     }
 
-    public JToggleButton getToggleButtonToolHearth() {
-        return toggleButtonToolHearth;
-    }
-
-
-    public JToggleButton getToggleButtonToolCircle3() {
-        return toggleButtonToolCircle3;
-    }
 
     //#TODO add
 
+    public JToggleButton getToggleButtonToolHearth() {
+        return toggleButtonToolHearth;
+    }
 
     public JButton getButtonToolColor() {
         return buttonToolColor;
@@ -317,8 +329,6 @@ public class ToolsPanelView extends javax.swing.JDialog {
 
         toggleButtonToolHearth = new JToggleButton();
 
-        toggleButtonToolCircle3 = new JToggleButton();
-
         //#TODO add more primitives  @
 
 
@@ -350,7 +360,7 @@ public class ToolsPanelView extends javax.swing.JDialog {
 
         //#TODO add more primitives @
 
-        for (JToggleButton jToggleButton : Arrays.asList(toggleButtonToolRectangle, toggleButtonToolOval, toggleButtonToolLine, toggleButtonToolFill, toggleButtonToolCut, toggleButtonToolStar, toggleButtonToolHexagon, toggleButtonToolParallelogram, toggleButtonToolPentagon, toggleButtonToolTrapezoid, toggleButtonToolTriangle, toggleButtonToolHearth,toggleButtonToolCircle3)) {
+        for (JToggleButton jToggleButton : Arrays.asList(toggleButtonToolRectangle, toggleButtonToolOval, toggleButtonToolLine, toggleButtonToolFill, toggleButtonToolCut, toggleButtonToolStar, toggleButtonToolHexagon, toggleButtonToolParallelogram, toggleButtonToolPentagon, toggleButtonToolTrapezoid, toggleButtonToolTriangle, toggleButtonToolHearth)) {
             jToggleButton.setMaximumSize(new Dimension(45, 40));
             jToggleButton.setMinimumSize(new Dimension(45, 40));
             jToggleButton.setPreferredSize(new Dimension(45, 40));
@@ -395,10 +405,9 @@ public class ToolsPanelView extends javax.swing.JDialog {
                                                                         .addComponent(toggleButtonToolOval, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                         .addComponent(toggleButtonToolHexagon, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                                                         .addComponent(toggleButtonToolTrapezoid, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(toggleButtonToolCircle3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+
                                                                         // #TODO add here the next shape @
                                                                         .addComponent(toggleButtonToolCut, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-
 
 
                                                                 )
@@ -469,10 +478,10 @@ public class ToolsPanelView extends javax.swing.JDialog {
 
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
 
-                                        .addComponent(toggleButtonToolHearth, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(toggleButtonToolHearth, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
 
-                                                .addComponent(toggleButtonToolCircle3, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-                                //#TODO add more !!!! @
+
+                                        //#TODO add more !!!! @
 
                                 )
 
@@ -498,7 +507,6 @@ public class ToolsPanelView extends javax.swing.JDialog {
                                 .addContainerGap())
 
 
-
         );
 
         pack();
@@ -506,34 +514,6 @@ public class ToolsPanelView extends javax.swing.JDialog {
 
     private void toolSizeStateChanged(javax.swing.event.ChangeEvent evt) {
         labelToolSize.setText(String.valueOf(sliderToolSize.getValue()));
-    }
-
-    public static void main(String args[]) {
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | InstantiationException | IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ToolsPanelView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                ToolsPanelView dialog = new ToolsPanelView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
     }
 
 

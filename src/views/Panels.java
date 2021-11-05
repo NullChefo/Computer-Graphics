@@ -4,10 +4,8 @@
  */
 package views;
 
-import java.awt.Graphics;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 
 
 public class Panels extends JPanel {
@@ -29,12 +27,12 @@ public class Panels extends JPanel {
         this.repaint();
     }
 
-    public void setButtonClose(JButton but) {
-        buttonClose = but;
-    }
-
     public JButton getButtonClose() {
         return buttonClose;
+    }
+
+    public void setButtonClose(JButton but) {
+        buttonClose = but;
     }
 
     public JLabel getTitle() {

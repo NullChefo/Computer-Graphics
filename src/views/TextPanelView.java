@@ -1,9 +1,9 @@
 package views;
 
 import controller.Controller;
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
+
 import javax.swing.*;
+import java.awt.*;
 
 
 public class TextPanelView extends javax.swing.JDialog {
@@ -25,10 +25,10 @@ public class TextPanelView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setLocation(new Point((int)(parent.getLocation().getX()+parent.getWidth()-this.getWidth()),(int)(parent.getLocation().getY())));
+        this.setLocation(new Point((int) (parent.getLocation().getX() + parent.getWidth() - this.getWidth()), (int) (parent.getLocation().getY())));
         this.setVisible(false);
         this.setTitle("Text Layer - Project CG & GPI");
-        mainview = (MainView)parent;
+        mainview = (MainView) parent;
         control = mainview.getController();
         GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] fonts = e.getAvailableFontFamilyNames();
@@ -42,6 +42,35 @@ public class TextPanelView extends javax.swing.JDialog {
         textFieldFontText.addKeyListener(control);
         buttonFontCreate.addActionListener(control);
         buttonFontCancel.addActionListener(control);
+    }
+
+    public static void main(String args[]) {
+
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException ex) {
+            java.util.logging.Logger.getLogger(TextPanelView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                TextPanelView dialog = new TextPanelView(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
     }
 
     public JComboBox getComboBoxFont() {
@@ -67,7 +96,6 @@ public class TextPanelView extends javax.swing.JDialog {
     public JButton getButtonFontCancel() {
         return buttonFontCancel;
     }
-
 
     @SuppressWarnings("unchecked")
     private void initComponents() {
@@ -95,7 +123,7 @@ public class TextPanelView extends javax.swing.JDialog {
         labelStyle.setText("Style");
 
         comboBoxFontStyle.setFont(new java.awt.Font("Times New Roman", 0, 14));
-        comboBoxFontStyle.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Plain", "Bold", "Italic", "Bold Italic" }));
+        comboBoxFontStyle.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Plain", "Bold", "Italic", "Bold Italic"}));
 
         spinnerFontSize.setFont(new java.awt.Font("Times New Roman", 0, 14));
         spinnerFontSize.setModel(new javax.swing.SpinnerNumberModel(12, 1, 100, 1));
@@ -187,37 +215,6 @@ public class TextPanelView extends javax.swing.JDialog {
 
         pack();
     }
-
-    public static void main(String args[]) {
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TextPanelView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                TextPanelView dialog = new TextPanelView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
-
 
 
 }

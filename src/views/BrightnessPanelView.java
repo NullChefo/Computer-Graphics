@@ -1,15 +1,15 @@
 package views;
 
 //region imports
+
 import controller.Controller;
-import java.awt.Point;
+
 import javax.swing.*;
+import java.awt.*;
 //endregion
 
 
-
 public class BrightnessPanelView extends javax.swing.JDialog {
-
 
 
     // Variables declaration
@@ -29,35 +29,69 @@ public class BrightnessPanelView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setLocation(new Point((int)(parent.getLocation().getX()+parent.getWidth()-this.getWidth()),(int)(parent.getLocation().getY())));
+        this.setLocation(new Point((int) (parent.getLocation().getX() + parent.getWidth() - this.getWidth()), (int) (parent.getLocation().getY())));
         this.setVisible(false);
-        mainview = (MainView)parent;
+        mainview = (MainView) parent;
         control = mainview.getController();
         sliderBright.addChangeListener(control);
         sliderContrast.addChangeListener(control);
         buttonBrightExec.addActionListener(control);
         buttonBrightCancel.addActionListener(control);
     }
+
+    public static void main(String args[]) {
+
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(BrightnessPanelView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                BrightnessPanelView dialog = new BrightnessPanelView(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
+
     public JLabel getLabelBright() {
         return labelBright;
     }
+
     public JLabel getLabelContrast() {
         return labelContrast;
     }
+
     public JSlider getSliderBright() {
         return sliderBright;
     }
+
     public JButton getBrightCancel() {
         return buttonBrightCancel;
     }
+
     public JSlider getSliderContrast() {
         return sliderContrast;
     }
+
     public JButton getBrightExec() {
         return buttonBrightExec;
     }
-
-
 
     @SuppressWarnings("unchecked")
     private void initComponents() {
@@ -162,37 +196,6 @@ public class BrightnessPanelView extends javax.swing.JDialog {
         );
 
         pack();
-    }
-
-
-    public static void main(String args[]) {
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BrightnessPanelView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                BrightnessPanelView dialog = new BrightnessPanelView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
     }
 
 }

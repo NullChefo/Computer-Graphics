@@ -1,10 +1,11 @@
 package views;
 
 import controller.Controller;
-import java.awt.Point;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.*;
 
 
 public class RotationPanelView extends javax.swing.JDialog implements Observer {
@@ -26,9 +27,9 @@ public class RotationPanelView extends javax.swing.JDialog implements Observer {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setLocation(new Point((int)(parent.getLocation().getX()+parent.getWidth()-this.getWidth()),(int)(parent.getLocation().getY())));
+        this.setLocation(new Point((int) (parent.getLocation().getX() + parent.getWidth() - this.getWidth()), (int) (parent.getLocation().getY())));
         this.setVisible(false);
-        mainview = (MainView)parent;
+        mainview = (MainView) parent;
         control = mainview.getController();
         control.addObserver(this);
         spinnerAngle.addChangeListener(control);
@@ -36,6 +37,34 @@ public class RotationPanelView extends javax.swing.JDialog implements Observer {
         buttonRotation.addActionListener(control);
         buttonReset.addActionListener(control);
         buttonCancel.addActionListener(control);
+    }
+
+    public static void main(String args[]) {
+
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(RotationPanelView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                RotationPanelView dialog = new RotationPanelView(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
     }
 
     public JSpinner getSpinnerAngle() {
@@ -57,7 +86,6 @@ public class RotationPanelView extends javax.swing.JDialog implements Observer {
     public JButton getButtonCancel() {
         return buttonCancel;
     }
-
 
     @SuppressWarnings("unchecked")
 
@@ -142,37 +170,6 @@ public class RotationPanelView extends javax.swing.JDialog implements Observer {
 
         pack();
     }
-
-
-    public static void main(String args[]) {
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(RotationPanelView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                RotationPanelView dialog = new RotationPanelView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
-
-
 
     @Override
     public void update(Observable obs, Object o) {

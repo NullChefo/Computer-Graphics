@@ -1,7 +1,8 @@
 package models;
 
-import java.awt.image.BufferedImage;
 import views.ImagePanel;
+
+import java.awt.image.BufferedImage;
 
 
 public class Creator {

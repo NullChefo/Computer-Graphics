@@ -1,9 +1,9 @@
 package views;
 
-import javax.swing.*;
-
 import controller.Controller;
-import java.awt.FlowLayout;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -156,21 +156,21 @@ public class MainView extends javax.swing.JFrame implements Observer {
         labelX.setEnabled(false);
         labelY.setEnabled(false);
 
-        newView = new NewView(this,true);
+        newView = new NewView(this, true);
         newView.addWindowListener(controller);
-        rotationView = new RotationPanelView(this,false);
+        rotationView = new RotationPanelView(this, false);
         rotationView.addWindowListener(controller);
-        resizeView = new ResizeView(this,false);
+        resizeView = new ResizeView(this, false);
         resizeView.addWindowListener(controller);
-        laysHistView = new LaysHistView(this,false);
+        laysHistView = new LaysHistView(this, false);
         laysHistView.addWindowListener(controller);
-        textview = new TextPanelView(this,false);
+        textview = new TextPanelView(this, false);
         textview.addWindowListener(controller);
-        toolsView = new ToolsPanelView(this,false);
+        toolsView = new ToolsPanelView(this, false);
         toolsView.addWindowListener(controller);
-        colorBalanceView = new ColorBalanceView(this,true);
+        colorBalanceView = new ColorBalanceView(this, true);
         colorBalanceView.addWindowListener(controller);
-        brightnessView = new BrightnessPanelView(this,true);
+        brightnessView = new BrightnessPanelView(this, true);
         brightnessView.addWindowListener(controller);
         menuItemCopy.setEnabled(false);
         menuItemPaste.setEnabled(false);
@@ -182,6 +182,31 @@ public class MainView extends javax.swing.JFrame implements Observer {
         this.setIconImage(new ImageIcon("src/images/icon.png").getImage());
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(MainView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new MainView().setVisible(true);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -238,7 +263,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
         labelZoom2.setText("%");
 
 
-
         spinnerZoom.setFont(new java.awt.Font("Times New Roman", 0, 12));
         spinnerZoom.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(100.0f), Float.valueOf(10.0f), Float.valueOf(10000.0f), Float.valueOf(1.0f)));
 
@@ -281,7 +305,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
         menuItemSave.setText("Save");
         menuItemSave.setToolTipText("save current image or project");
         menuFile.add(menuItemSave);
-
 
 
         menuItemClose.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
@@ -364,7 +387,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
         MenuBar.add(menuLayer);
 
 
-
         menuWindow.setMnemonic('w');
         menuWindow.setText("Windows");
         menuWindow.setToolTipText("");
@@ -435,32 +457,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
         menuLayer.add(menuItemLayRotate);
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new MainView().setVisible(true);
-            }
-        });
-    }
-
     public final void addClosableTab(final TabbedPanes tabbedPane, final JComponent c, Panels pan, final String title,
                                      final Icon icon) {
         if (tabbedPane.getSelectedIndex() == -1) {
@@ -489,8 +485,7 @@ public class MainView extends javax.swing.JFrame implements Observer {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int option = (new JOptionPane()).showConfirmDialog(null, "Are you sure about closing the current project?" + System.lineSeparator() + "Be sure to save it before closing.", "Close project - Project CG & GPI", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (option == JOptionPane.OK_OPTION)
-                {
+                if (option == JOptionPane.OK_OPTION) {
                     int index = tabbedPane.indexOfComponent(c);
                     if (projects.get(index).getHasRot()) {
                         rotationView.setVisible(false);
@@ -554,8 +549,7 @@ public class MainView extends javax.swing.JFrame implements Observer {
         if (tabbedPane.getSelectedIndex() == -1) {
             this.setTitle("Project CG & GPI");
             this.setIconImage(new ImageIcon("src/images/icon.png").getImage());
-        }
-        else {
+        } else {
             ImagePanel img = projects.get(tabbedPane.getSelectedIndex());
             this.setTitle("Project CG & GPI - " + img.getFileName() + " (" + img.getImgW() + "x" + img.getImgH() + ")");
             this.setIconImage(img.getBuiltImage());
@@ -569,7 +563,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
     public JLabel getLabelY() {
         return labelY;
     }
-
 
 
     public JMenuItem getMenuItemCopy() {
@@ -616,7 +609,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
     public JMenuItem getMenuItemTools() {
         return menuItemTools;
     }
-
 
 
     public TabbedPanes getTabs() {
@@ -683,12 +675,12 @@ public class MainView extends javax.swing.JFrame implements Observer {
         return toolsView;
     }
 
-    public void setResizeView(ResizeView resizeview) {
-        resizeView = resizeview;
-    }
-
     public ResizeView getResizeView() {
         return resizeView;
+    }
+
+    public void setResizeView(ResizeView resizeview) {
+        resizeView = resizeview;
     }
 
     public ColorBalanceView getColorBalanceView() {
@@ -801,7 +793,6 @@ public class MainView extends javax.swing.JFrame implements Observer {
         menuItemBright.setEnabled(false);
         laysHistView.getSliderLaysAlpha().setValue(100);
     }
-
 
 
     @Override

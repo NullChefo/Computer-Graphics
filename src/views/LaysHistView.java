@@ -6,14 +6,7 @@ package views;
 
 import controller.Controller;
 
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JSlider;
-import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
+import javax.swing.*;
 
 
 public class LaysHistView extends javax.swing.JDialog {
@@ -46,7 +39,7 @@ public class LaysHistView extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         this.setVisible(false);
         this.setTitle("Layers - History - Project CG & GPI");
-        mainview = (MainView)parent;
+        mainview = (MainView) parent;
         control = mainview.getController();
         listLayers.addListSelectionListener(control);
         listHistory.addListSelectionListener(control);
@@ -71,6 +64,40 @@ public class LaysHistView extends javax.swing.JDialog {
         toggleButtonLaysView.setSelectedIcon(new ImageIcon("src/images/eyebis.png"));
         sliderLaysAlpha.addChangeListener(control);
         buttonLaysRename.addActionListener(control);
+    }
+
+    public static void main(String args[]) {
+
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(LaysHistView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(LaysHistView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(LaysHistView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(LaysHistView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                LaysHistView dialog = new LaysHistView(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
     }
 
     public JSlider getSliderLaysAlpha() {
@@ -128,8 +155,6 @@ public class LaysHistView extends javax.swing.JDialog {
     public JTabbedPane getTabbedPaneLaysHist() {
         return tabbedPaneLaysHist;
     }
-
-
 
     @SuppressWarnings("unchecked")
     private void initComponents() {
@@ -293,40 +318,6 @@ public class LaysHistView extends javax.swing.JDialog {
         );
 
         pack();
-    }
-
-    public static void main(String args[]) {
-
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(LaysHistView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(LaysHistView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LaysHistView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LaysHistView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                LaysHistView dialog = new LaysHistView(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
     }
 
 
